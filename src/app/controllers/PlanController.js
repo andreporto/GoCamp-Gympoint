@@ -68,6 +68,28 @@ class PlanController {
     const { duration, price, admin_id } = await plan.update(req.body);
     return res.json({ id, title, duration, price, admin_id });
   }
+
+  async index(req, res) {
+    const plans = await Plan.findAll();
+    return res.json(plans);
+  }
+
+  async delete(req, res) {
+    const id = req.body.planId;
+    const plan = await Plan.findByPk(id);
+
+    if (!plan) {
+      return res.status(401).json({ error: 'Plan not found.' });
+    }
+
+    const deletedPlan = await Plan.destroy({
+      where: {
+        id
+      }
+    });
+
+    return res.json(deletedPlan);
+  }
 }
 
 export default new PlanController();
